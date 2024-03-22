@@ -42,7 +42,7 @@ class WindowManager:
         # Create frames.
         self.frames.append(HeaderFrame(self.root, (0, 0)))
         self.frames.append(SideFrame(self.root, default_side_data, (1, 0)))
-        self.frames.append(BodyFrame(self.root, default_body_data, "data/task_1.txt", (1,1)))
+        self.frames.append(BodyFrame(self.root, default_body_data, "data/test_file_1.txt", (1,1)))
         self.frames.append(FooterFrame(self.root, [], (1, 0)))
 
         self.active_directory = self.frames[0].directory_field.get()
