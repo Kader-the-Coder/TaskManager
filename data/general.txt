@@ -1,0 +1,34 @@
+# tab 1
+    # checkbox 1A
+        AAA1
+
+        AAA2
+
+        AAA3
+    # checkbox 
+
+    # checkbox 1B
+        BBB
+    # checkbox 
+
+    # checkbox 1C
+        CCC
+    # checkbox 
+
+# tab 
+
+# tab 2
+
+    # checkbox 2A
+        2AAA
+    # checkbox 
+
+    # checkbox B2
+        2BBB
+    # checkbox 
+
+    # checkbox 2C
+        2CCC
+    # checkbox 
+
+# tab 
