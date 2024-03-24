@@ -133,7 +133,6 @@ class HeaderFrame:
     def get_directory(self, event=None):
         """Returns the text in the entry field"""
         self.selected_directory = self.directory_field.get()
-        print(self.selected_directory)
 
 
 if __name__ == "__main__":
