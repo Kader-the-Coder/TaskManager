@@ -58,11 +58,11 @@ class BodyFrame:
                     element.destroy()
 
             self.frames[i] = (
-                self.create_body_frame(self.label, self.data[i], self.directory[i])
+                self.create_body_frame(self.label, self.data[i], self.directory[i], i)
             )
 
 
-    def create_body_frame(self, root, data, directory):
+    def create_body_frame(self, root, data, directory, frame_index):
         """Create a body frame"""
         body_frame = tk.Frame(root, highlightthickness=0)
         body_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, anchor="n")
@@ -123,7 +123,7 @@ class BodyFrame:
         button = ttk.Button(body_frame,
                             text="Copy",
                             width=5,
-                            command=self.copy_to_clipboard)
+                            command=lambda frame_index=frame_index: self.copy_to_clipboard(frame_index))
         button.pack(side="right", anchor="ne")
 
         # Returns all widgets created in the method.
@@ -186,14 +186,14 @@ class BodyFrame:
         file_path = os.path.join(os.getcwd(), directory)
         os.system(f'start "" "{file_path}"')
 
-
-    def copy_to_clipboard(self, event=None):
+    # FIX ####################################################################################
+    def copy_to_clipboard(self, frame_index, event=None):
         """Copy data of selected checkboxes to clipboard"""
-        selected_tab_frame = self.frames[0][2].select()
-        selected_tab_index = self.frames[0][2].index(selected_tab_frame)
-        selected_tab_key = list(self.frames[0][4].keys())[selected_tab_index]
-        selected_tab_text = [value for _, value in self.data.items()][selected_tab_index]
-        selected_tab = self.frames[0][4][selected_tab_key]
+        selected_tab_frame = self.frames[frame_index][2].select()
+        selected_tab_index = self.frames[frame_index][2].index(selected_tab_frame)
+        selected_tab_key = list(self.frames[frame_index][4].keys())[selected_tab_index]
+        selected_tab_text = [value for _, value in self.data[frame_index].items()][selected_tab_index]
+        selected_tab = self.frames[frame_index][4][selected_tab_key]
 
         text = []
         for i, _checkbox in enumerate(selected_tab):

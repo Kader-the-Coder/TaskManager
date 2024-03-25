@@ -14,6 +14,8 @@ Usage:
     labels by removing keywords and hashtags.
 """
 
+import os
+
 
 def load_task_data(directory:str) -> dict:
     """
@@ -25,8 +27,14 @@ def load_task_data(directory:str) -> dict:
     Returns:
     - dict: A nested dictionary containing the loaded data.
     """
+
+    # Ensure that there is a valid file at directory.
+    if not os.path.isfile(directory):
+        print("Invalid directory.")
+        return {"ERROR": [(f"Invalid file at '{directory}'", "Not a valid directory")]}
+
     data_dict = {}
-    
+
      # Track if a tab or checkbox is being processed.
     tab = False
     checkbox = False
@@ -91,5 +99,10 @@ if __name__ == "__main__":
         print("{", f"{key}: ", value, "}", sep="")
 
     test_data = load_task_data("data\\Test Folder\\test_file_2.txt")
+    for key, value in test_data.items():
+        print("{", f"{key}: ", value, "}", sep="")
+
+    # Test for invalid directories
+    test_data = load_task_data("data")
     for key, value in test_data.items():
         print("{", f"{key}: ", value, "}", sep="")
