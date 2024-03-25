@@ -14,11 +14,12 @@ Usage:
 
 # pylint: disable=unused-argument
 
+import os
 import tkinter as tk
 from tkinter import ttk
-import os
 from pyperclip import copy
 from utils.load_data import load_task_data
+
 
 class BodyFrame:
     """Manages the body frame setup and flow."""
@@ -28,6 +29,7 @@ class BodyFrame:
         self.directory = directory # Link to create_body_frame to open correct file
         self.position = position
 
+
         # Create a Label with background color (For Debug purposes).
         # Change to Frame when done as label results in flickering
         self.label = tk.Label(self.root, background='blue')
@@ -36,9 +38,7 @@ class BodyFrame:
                         columnspan=4,
                         sticky="nswe")
 
-        self.body_frame_top = ()
-        self.body_frame_bottom = ()
-
+        self.frames = ["", ""] # max 3 elements
         self.load_frame()
 
 
@@ -47,33 +47,22 @@ class BodyFrame:
         Load the top and bottom frames.
         Destroy all widgets before reloading.
         """
-        for element in self.body_frame_top[:]:
-            if isinstance(element, dict):
-                for tab, widgets in element.items():
-                    for widget in widgets:
-                        widget[0].destroy()
-                    tab.destroy()
-            else:
-                element.destroy()
-        
-        for element in self.body_frame_bottom[:]:
-            if isinstance(element, dict):
-                for tab, widgets in element.items():
-                    for widget in widgets:
-                        widget[0].destroy()
-                    tab.destroy()
-            else:
-                element.destroy()
-        
-        self.body_frame_top = self.create_body_frame(
-            self.label, self.data
-            )
-        self.body_frame_bottom = self.create_body_frame(
-            self.label, load_task_data("data/general.txt")
+        for i, frame in enumerate(self.frames):
+            for element in frame[:]:
+                if isinstance(element, dict):
+                    for tab, widgets in element.items():
+                        for widget in widgets:
+                            widget[0].destroy()
+                        tab.destroy()
+                else:
+                    element.destroy()
+
+            self.frames[i] = (
+                self.create_body_frame(self.label, self.data[i], self.directory[i], i)
             )
 
 
-    def create_body_frame(self, root, data):
+    def create_body_frame(self, root, data, directory, frame_index):
         """Create a body frame"""
         body_frame = tk.Frame(root, highlightthickness=0)
         body_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, anchor="n")
@@ -83,10 +72,10 @@ class BodyFrame:
         notebook.pack()
 
         # Dimensions of canvas.
-        # Note that - 80 and +120)/4 are magic values and should be resolved.
+        # Note that - 80 and - 30 - 80 * len()) / len() are magic values.
         body_frame.update_idletasks()   # Ensure updated winfo is obtained.
         width = self.root.winfo_width() - 80
-        height = (self.root.winfo_height() + 120)/4
+        height = (self.root.winfo_height() - 30 - 80 * len(self.frames)) / len(self.frames)
 
         widgets = {}    # {tab: [label, ...], ...}
         canvas_and_inner_frame = {} # {body_frame: (canvas, inner_frame), ...}  <--- Looks inefficient
@@ -127,14 +116,14 @@ class BodyFrame:
         button = ttk.Button(body_frame,
                             text="Open",
                             width=5,
-                            command=self.open_file)
+                            command=lambda directory=directory: self.open_file(directory))
         button.pack(side="right", anchor="ne")
 
         # Create button for copying selected boxes.
         button = ttk.Button(body_frame,
                             text="Copy",
                             width=5,
-                            command=self.copy_to_clipboard)
+                            command=lambda frame_index=frame_index: self.copy_to_clipboard(frame_index))
         button.pack(side="right", anchor="ne")
 
         # Returns all widgets created in the method.
@@ -192,19 +181,19 @@ class BodyFrame:
                 canvas_widget.yview_scroll(-1 * (event.delta // 120), "units")
 
 
-    def open_file(self, event=None):
+    def open_file(self, directory, event=None):
         """Open the data folder."""
-        file_path = os.path.join(os.getcwd(), self.directory)
+        file_path = os.path.join(os.getcwd(), directory)
         os.system(f'start "" "{file_path}"')
 
-
-    def copy_to_clipboard(self, event=None):
+    # FIX ####################################################################################
+    def copy_to_clipboard(self, frame_index, event=None):
         """Copy data of selected checkboxes to clipboard"""
-        selected_tab_frame = self.body_frame_top[2].select()
-        selected_tab_index = self.body_frame_top[2].index(selected_tab_frame)
-        selected_tab_key = list(self.body_frame_top[4].keys())[selected_tab_index]
-        selected_tab_text = [value for _, value in self.data.items()][selected_tab_index]
-        selected_tab = self.body_frame_top[4][selected_tab_key]
+        selected_tab_frame = self.frames[frame_index][2].select()
+        selected_tab_index = self.frames[frame_index][2].index(selected_tab_frame)
+        selected_tab_key = list(self.frames[frame_index][4].keys())[selected_tab_index]
+        selected_tab_text = [value for _, value in self.data[frame_index].items()][selected_tab_index]
+        selected_tab = self.frames[frame_index][4][selected_tab_key]
 
         text = []
         for i, _checkbox in enumerate(selected_tab):
@@ -214,4 +203,3 @@ class BodyFrame:
 
         text = "\n".join(text)
         copy(text)
-        print(text)

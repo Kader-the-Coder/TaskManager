@@ -1,0 +1,5 @@
+{
+    "default_active_directory": "data",
+    "default_side_data": "data/buttons.txt",
+    "default_body_data": "data/general.txt"
+}
