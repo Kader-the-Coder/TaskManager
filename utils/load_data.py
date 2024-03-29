@@ -30,8 +30,11 @@ def load_task_data(directory:str) -> dict:
 
     # Ensure that there is a valid file at directory.
     if not os.path.isfile(directory):
-        print("Invalid directory.")
-        return {"ERROR": [(f"Invalid file at '{directory}'", "Not a valid directory")]}
+        return {
+            "ERROR": [
+                (f"Invalid file at '{directory}'","Not a valid directory")
+                ]
+            }
 
     data_dict = {}
 
@@ -49,11 +52,11 @@ def load_task_data(directory:str) -> dict:
 
     # Extract information from given txt file.
     with open(directory, "r", encoding="utf-8") as file:
-        for line in file:
+        for i, line in enumerate(file):
             # Check if the line indicates a new tab.
-            if line[:5] == "# tab":
+            if line.startswith("# tab"):
                 if not tab:
-                    # Save the tab label
+                    # Save the tab label.
                     tab_label = format_label(line[5:])
                 else:
                     # Save the checkboxes under the previous tab.
@@ -61,8 +64,9 @@ def load_task_data(directory:str) -> dict:
                     checkboxes = []
                 tab = not tab
                 continue
+
              # Check if the line indicates a new checkbox.
-            if tab and line[4:14] == "# checkbox":
+            if tab and line.startswith("# checkbox", 4):
                 if not checkbox:
                     # Save the checkbox label
                     checkbox_label = format_label(line[14:])
@@ -79,7 +83,28 @@ def load_task_data(directory:str) -> dict:
                 # Save the checkbox text.
                 text.append(line[8:].strip("\n"))
 
-    return data_dict
+    return ensure_data_integrity(data_dict)
+
+
+def ensure_data_integrity(data):
+    """
+    Ensure that each item in the given data is of the format:
+    {string: list of tuples containing two values}
+
+    Args:
+    - data (dict): the dictionary to check.
+
+    Returns:
+    - dict: "data" if valid, else {"ERROR": [("Invalid file format", "")]}
+    """
+    for key, value in data.items():
+        if not (isinstance(key, str) and key != "" and isinstance(value, list) and len(value) > 0):
+            return {"ERROR": [("Invalid file format", "")]}
+        for type_tuple in value:
+            if not (isinstance(type_tuple, tuple) and len(type_tuple) == 2 and type_tuple[0] != "" and type_tuple[1] != ""):
+                return {"ERROR": [("Invalid file format", "")]}
+    return data
+
 
 
 def format_label(label:str) -> str:
@@ -88,21 +113,25 @@ def format_label(label:str) -> str:
 
 
 if __name__ == "__main__":
-    # Run to see example outputs.
-
+    # Test for valid files in data directory.
     test_data = load_task_data("data\\buttons.txt")
-    for key, value in test_data.items():
-        print("{", f"{key}: ", value, "}", sep="")
+    for _key, _value in test_data.items():
+        print("Output 1: ", "{", f"{_key}: ", _value, "}", sep="")
+    print("-"*10)
 
+    # Test for valid files in data/* directory.
     test_data = load_task_data("data\\test_file_1.txt")
-    for key, value in test_data.items():
-        print("{", f"{key}: ", value, "}", sep="")
+    for _key, _value in test_data.items():
+        print("Output 2: ", "{", f"{_key}: ", _value, "}", sep="")
+    print("-"*10)
 
-    test_data = load_task_data("data\\Test Folder\\test_file_2.txt")
-    for key, value in test_data.items():
-        print("{", f"{key}: ", value, "}", sep="")
+    # Test for invalid files.
+    test_data = load_task_data("data\\invalid_file.txt")
+    for _key, _value in test_data.items():
+        print("Output 3: ", "{", f"{_key}: ", _value, "}", sep="")
+    print("-"*10)
 
-    # Test for invalid directories
+    # Test for invalid directories.
     test_data = load_task_data("data")
-    for key, value in test_data.items():
-        print("{", f"{key}: ", value, "}", sep="")
+    for _key, _value in test_data.items():
+        print("Output 4: ", "{", f"{_key}: ", _value, "}", sep="")
