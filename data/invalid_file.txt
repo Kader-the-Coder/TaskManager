@@ -1,37 +1,9 @@
-asdf
+@ Functional Requirements
+> Greeting
+Thank you for your submission, NAME. You were successfully able to implement version control using Git. From your screenshots ...
+
 # tab 1
-    
-        AAA1
-
-        AAA2
-
-        AAA3
-    
-
-    # checkbox 1B
-        BBB
-    # checkbox 
-
-# tab 
-
-
-
-    # checkbox 2A
-        2AAA
-    # checkbox 
-
-    # checkbox 2B
-        2BBB
-    # checkbox 
-
-    # checkbox 2C
-        2CCC
-    # checkbox 
-
-# tab 
-
-# tab 3
-
-    # checkbox 3A
-        3AAA
-    # checkbox 
+    # checkbox Test
+        ABC
+    # checkbox
+# tab

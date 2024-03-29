@@ -97,14 +97,37 @@ def ensure_data_integrity(data):
     Returns:
     - dict: "data" if valid, else {"ERROR": [("Invalid file format", "")]}
     """
-    for key, value in data.items():
-        if not (isinstance(key, str) and key != "" and isinstance(value, list) and len(value) > 0):
-            return {"ERROR": [("Invalid file format", "")]}
-        for type_tuple in value:
-            if not (isinstance(type_tuple, tuple) and len(type_tuple) == 2 and type_tuple[0] != "" and type_tuple[1] != ""):
-                return {"ERROR": [("Invalid file format", "")]}
-    return data
 
+    def is_valid_tuple(type_tuple):
+        """Returns True if the tuple is valid, False otherwise."""
+        return (
+            isinstance(type_tuple, tuple)
+            and len(type_tuple) == 2
+            and type_tuple[0] != ""
+            and type_tuple[1] != ""
+            )
+
+
+    def is_valid_data(key, value):
+        """Returns True if the key-value pair is valid, False otherwise."""
+        return (
+            isinstance(key, str)
+            and key != ""
+            and isinstance(value, list)
+            and len(value) > 0
+        )
+
+
+    if len(data) > 0:
+        for key, value in data.items():
+            if not is_valid_data(key, value):
+                return {"ERROR": [("Invalid file format", "")]}
+            for type_tuple in value:
+                if not is_valid_tuple(type_tuple):
+                    return {"ERROR": [("Invalid file format", "")]}
+        return data
+
+    return {"ERROR": [("Invalid file format", "")]}
 
 
 def format_label(label:str) -> str:
