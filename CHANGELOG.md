@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.3] - 2024-03-29
+- Modify the load_data module to ensure that the returned dictionary is of a valid format (Agian).
+- Fixed bug (Again) where invalid files were not removed when reloading or loading in a new file.
+
 ## [0.0.2] - 2024-03-29
 - Modify the load_data module to ensure that the returned dictionary is of a valid format.
 - Fixed bug where invalid files were not removed when reloading or loading in a new file.
