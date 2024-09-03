@@ -2,6 +2,16 @@
 
 This application provides a toolkit for reviewing text data organized into tasks and categories. It allows users to view and copy text data associated with different tasks and categories. Users can also reload data and open files from within the application.
 
+## Table of Contents
+
+1. [Installation](#installation)
+2. [File Structure](#file-structure)
+3. [Usage](#usage)
+4. [Example Data](#example-data)
+5. [Modules](#modules)
+6. [License](#license)
+
+
 ## Installation
 
 ### Method 1
